@@ -1,0 +1,566 @@
+/* ============================================
+   F5XC-AUTH Documentation Custom Styles
+   Based on f5xc-xcsh theme with F5 branding
+   ============================================ */
+
+/* -----------------------------------------
+   CSS Custom Properties - Light Mode
+   ----------------------------------------- */
+:root {
+  /* F5 Brand Colors */
+  --md-primary-fg-color: #4f73ff;
+  --md-primary-fg-color--light: #6b8aff;
+  --md-primary-fg-color--dark: #3d5dcc;
+  --md-accent-fg-color: #4f73ff;
+
+  /* Text Colors */
+  --md-default-fg-color: #0f1e57;
+  --md-default-fg-color--light: #4a5568;
+  --md-default-fg-color--lighter: #718096;
+  --md-default-fg-color--lightest: #a0aec0;
+
+  /* Background Colors */
+  --md-default-bg-color: #ffffff;
+  --md-default-bg-color--light: #f7fafc;
+  --md-default-bg-color--lighter: #edf2f7;
+  --md-default-bg-color--lightest: #e2e8f0;
+
+  /* Code Block Colors */
+  --md-code-bg-color: #f4f6f8;
+  --md-code-fg-color: #0f1e57;
+  --md-code-hl-color: rgba(79, 115, 255, 0.1);
+
+  /* Typography */
+  --md-text-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --md-code-font: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+
+  /* Sizing */
+  --md-sidebar-width: 16rem;
+  --md-toc-width: 11rem;
+}
+
+/* -----------------------------------------
+   CSS Custom Properties - Dark Mode
+   GitHub Dark Theme
+   ----------------------------------------- */
+[data-md-color-scheme="slate"] {
+  /* Background */
+  --md-default-bg-color: #0d1117;
+  --md-default-bg-color--light: #161b22;
+  --md-default-bg-color--lighter: #21262d;
+  --md-default-bg-color--lightest: #30363d;
+
+  /* Text */
+  --md-default-fg-color: #e6edf3;
+  --md-default-fg-color--light: #8b949e;
+  --md-default-fg-color--lighter: #6e7681;
+  --md-default-fg-color--lightest: #484f58;
+
+  /* Primary/Accent */
+  --md-primary-fg-color: #58a6ff;
+  --md-primary-fg-color--light: #79b8ff;
+  --md-primary-fg-color--dark: #388bfd;
+  --md-accent-fg-color: #58a6ff;
+
+  /* Code */
+  --md-code-bg-color: #161b22;
+  --md-code-fg-color: #e6edf3;
+  --md-code-hl-color: rgba(88, 166, 255, 0.15);
+
+  /* Footer */
+  --md-footer-bg-color: #0d1117;
+  --md-footer-bg-color--dark: #010409;
+}
+
+/* -----------------------------------------
+   Typography Base
+   ----------------------------------------- */
+html {
+  font-size: 14px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--md-text-font);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* -----------------------------------------
+   Headers
+   ----------------------------------------- */
+.md-content h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--md-default-bg-color--lightest);
+}
+
+.md-content h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.md-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.md-content h4,
+.md-content h5,
+.md-content h6 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* -----------------------------------------
+   Navigation
+   ----------------------------------------- */
+.md-nav__link {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.75rem;
+}
+
+.md-nav__item--active > .md-nav__link {
+  font-weight: 600;
+  color: var(--md-primary-fg-color);
+}
+
+.md-tabs__link {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Sidebar */
+.md-sidebar--primary {
+  width: var(--md-sidebar-width);
+}
+
+.md-sidebar--secondary {
+  width: var(--md-toc-width);
+}
+
+/* -----------------------------------------
+   Code Blocks
+   ----------------------------------------- */
+.md-typeset code {
+  font-family: var(--md-code-font);
+  font-size: 0.75rem;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background-color: var(--md-code-bg-color);
+}
+
+.md-typeset pre {
+  border-radius: 6px;
+  margin: 1rem 0;
+}
+
+.md-typeset pre > code {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  padding: 0.75rem 1rem;
+}
+
+/* Code copy button */
+.md-clipboard {
+  color: var(--md-default-fg-color--lighter);
+}
+
+.md-clipboard:hover {
+  color: var(--md-primary-fg-color);
+}
+
+/* Syntax highlighting adjustments */
+.highlight .linenos {
+  color: var(--md-default-fg-color--lightest);
+  padding-right: 1rem;
+  border-right: 1px solid var(--md-default-bg-color--lightest);
+  margin-right: 1rem;
+}
+
+/* -----------------------------------------
+   Tables
+   ----------------------------------------- */
+.md-typeset table:not([class]) {
+  font-size: 0.8rem;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  display: table;
+  width: 100%;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--md-default-bg-color--light);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 2px solid var(--md-default-bg-color--lightest);
+}
+
+.md-typeset table:not([class]) td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--md-default-bg-color--lightest);
+  vertical-align: top;
+}
+
+.md-typeset table:not([class]) tr:hover td {
+  background-color: var(--md-code-hl-color);
+}
+
+/* -----------------------------------------
+   Admonitions
+   ----------------------------------------- */
+.md-typeset .admonition,
+.md-typeset details {
+  font-size: 0.8rem;
+  border-radius: 6px;
+  margin: 1rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.md-typeset .admonition-title,
+.md-typeset summary {
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Custom admonition colors */
+.md-typeset .admonition.note,
+.md-typeset details.note {
+  border-color: var(--md-primary-fg-color);
+}
+
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  border-color: #10b981;
+}
+
+.md-typeset .admonition.warning,
+.md-typeset details.warning {
+  border-color: #f59e0b;
+}
+
+.md-typeset .admonition.danger,
+.md-typeset details.danger {
+  border-color: #ef4444;
+}
+
+/* -----------------------------------------
+   Hero Section (Home Page)
+   ----------------------------------------- */
+.md-typeset .hero {
+  text-align: center;
+  padding: 3rem 1rem;
+  margin: -1rem -1rem 2rem -1rem;
+  background: linear-gradient(135deg, var(--md-primary-fg-color) 0%, var(--md-primary-fg-color--dark) 100%);
+  color: white;
+  border-radius: 0 0 12px 12px;
+}
+
+.md-typeset .hero h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  border: none;
+  padding: 0;
+  color: white;
+}
+
+.md-typeset .hero p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  max-width: 600px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.md-typeset .hero-badges {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.md-typeset .hero-badges img {
+  height: 24px;
+}
+
+/* -----------------------------------------
+   Feature Cards
+   ----------------------------------------- */
+.md-typeset .feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.md-typeset .feature-card {
+  padding: 1.25rem;
+  background: var(--md-default-bg-color--light);
+  border-radius: 8px;
+  border: 1px solid var(--md-default-bg-color--lightest);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.md-typeset .feature-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.md-typeset .feature-card h3 {
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--md-primary-fg-color);
+}
+
+.md-typeset .feature-card p {
+  font-size: 0.85rem;
+  margin: 0;
+  color: var(--md-default-fg-color--light);
+}
+
+/* -----------------------------------------
+   Badges
+   ----------------------------------------- */
+.md-typeset .badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 4px;
+  letter-spacing: 0.025em;
+}
+
+.md-typeset .badge-primary {
+  background-color: var(--md-primary-fg-color);
+  color: white;
+}
+
+.md-typeset .badge-success {
+  background-color: #10b981;
+  color: white;
+}
+
+.md-typeset .badge-warning {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.md-typeset .badge-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+/* -----------------------------------------
+   Search
+   ----------------------------------------- */
+.md-search__input {
+  font-size: 0.8rem;
+  border-radius: 6px;
+}
+
+.md-search-result__meta {
+  font-size: 0.7rem;
+}
+
+.md-search-result__title {
+  font-size: 0.85rem;
+}
+
+/* -----------------------------------------
+   Footer
+   ----------------------------------------- */
+.md-footer {
+  font-size: 0.75rem;
+}
+
+.md-footer-meta {
+  padding: 0.75rem 0;
+}
+
+/* Hide "Made with Material for MkDocs" */
+.md-footer-meta__inner.md-grid {
+  display: flex;
+  justify-content: center;
+}
+
+/* -----------------------------------------
+   Scrollbar (WebKit browsers)
+   ----------------------------------------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--md-default-bg-color--light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--md-default-fg-color--lightest);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-default-fg-color--lighter);
+}
+
+/* -----------------------------------------
+   Responsive Adjustments
+   ----------------------------------------- */
+@media screen and (max-width: 76.1875em) {
+  .md-sidebar--primary {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 60em) {
+  .md-typeset .hero h1 {
+    font-size: 1.75rem;
+  }
+
+  .md-typeset .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* -----------------------------------------
+   Print Styles
+   ----------------------------------------- */
+@media print {
+  .md-sidebar,
+  .md-header,
+  .md-footer,
+  .md-tabs {
+    display: none !important;
+  }
+
+  .md-content {
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .md-typeset .hero {
+    background: none !important;
+    color: var(--md-default-fg-color) !important;
+    padding: 1rem 0 !important;
+  }
+}
+
+/* -----------------------------------------
+   API Reference Specific Styles
+   ----------------------------------------- */
+.md-typeset .api-method {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: var(--md-code-font);
+  text-transform: uppercase;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+
+.md-typeset .api-method-get {
+  background-color: #10b981;
+  color: white;
+}
+
+.md-typeset .api-method-post {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.md-typeset .api-method-put {
+  background-color: #f59e0b;
+  color: white;
+}
+
+.md-typeset .api-method-delete {
+  background-color: #ef4444;
+  color: white;
+}
+
+/* Parameter table styling */
+.md-typeset .param-table {
+  font-size: 0.8rem;
+}
+
+.md-typeset .param-table code {
+  font-size: 0.7rem;
+}
+
+.md-typeset .param-required {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.md-typeset .param-optional {
+  color: var(--md-default-fg-color--lighter);
+}
+
+/* Type annotations */
+.md-typeset .type-annotation {
+  color: var(--md-primary-fg-color);
+  font-family: var(--md-code-font);
+  font-size: 0.75rem;
+}
+
+/* -----------------------------------------
+   Tabs Content
+   ----------------------------------------- */
+.md-typeset .tabbed-set {
+  margin: 1rem 0;
+}
+
+.md-typeset .tabbed-labels > label {
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+}
+
+/* -----------------------------------------
+   Installation Command Box
+   ----------------------------------------- */
+.md-typeset .install-command {
+  background: var(--md-code-bg-color);
+  border: 1px solid var(--md-default-bg-color--lightest);
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.md-typeset .install-command code {
+  flex: 1;
+  background: none;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+.md-typeset .install-command .copy-btn {
+  padding: 0.25rem 0.5rem;
+  background: var(--md-primary-fg-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.md-typeset .install-command .copy-btn:hover {
+  background: var(--md-primary-fg-color--dark);
+}
