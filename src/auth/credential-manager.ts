@@ -86,14 +86,29 @@ const URL_PATTERNS = {
  * - tenant.volterra.us -> tenant.console.ves.volterra.io/api (production)
  * - tenant.staging.volterra.us -> tenant.staging.volterra.us/api (staging - keep as-is)
  * - tenant.console.ves.volterra.io -> tenant.console.ves.volterra.io/api
+ * - Protocol-less URLs (adds https://)
  * - Any of the above with trailing slashes or /api suffix
+ * - Whitespace-padded URLs
  *
  * @param input - Raw URL from user configuration
- * @returns Normalized API URL
+ * @returns Normalized API URL with /api suffix
  */
 export function normalizeApiUrl(input: string): string {
+  // Trim whitespace
+  let url = input.trim();
+
+  // Handle empty string
+  if (!url) {
+    return "";
+  }
+
+  // Add https:// protocol if missing
+  if (!url.match(/^https?:\/\//i)) {
+    url = `https://${url}`;
+  }
+
   // Remove trailing slashes and existing /api suffix
-  let url = input.replace(URL_PATTERNS.TRAILING_CLEANUP, "");
+  url = url.replace(URL_PATTERNS.TRAILING_CLEANUP, "");
 
   // Handle staging short-form URLs - keep as-is (don't convert to console.ves)
   const stagingMatch = url.match(URL_PATTERNS.STAGING_SHORT_FORM);
@@ -132,6 +147,31 @@ export function normalizeApiUrl(input: string): string {
 export function extractTenantFromUrl(url: string): string | null {
   const match = url.match(/https?:\/\/([^./]+)\./);
   return match?.[1] ?? null;
+}
+
+/**
+ * Normalize tenant URL without /api suffix
+ *
+ * Use this when you need the base URL without the /api suffix,
+ * such as for consumers who add /api themselves or for display purposes.
+ *
+ * @param input - Raw URL from user configuration
+ * @returns Normalized URL without /api suffix
+ *
+ * @example
+ * normalizeTenantUrl("tenant.console.ves.volterra.io")
+ * // Returns: "https://tenant.console.ves.volterra.io"
+ *
+ * normalizeTenantUrl("https://tenant.console.ves.volterra.io/api")
+ * // Returns: "https://tenant.console.ves.volterra.io"
+ */
+export function normalizeTenantUrl(input: string): string {
+  const apiUrl = normalizeApiUrl(input);
+  if (!apiUrl) {
+    return "";
+  }
+  // Strip /api suffix
+  return apiUrl.replace(/\/api\/?$/i, "");
 }
 
 /**

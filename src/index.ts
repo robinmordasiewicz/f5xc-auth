@@ -28,6 +28,7 @@ export {
   AuthMode,
   AUTH_ENV_VARS,
   normalizeApiUrl,
+  normalizeTenantUrl,
   extractTenantFromUrl,
   type Credentials,
 } from "./auth/credential-manager.js";
