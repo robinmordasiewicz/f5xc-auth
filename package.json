@@ -1,6 +1,6 @@
 {
   "name": "@robinmordasiewicz/f5xc-auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shared authentication library for F5 Distributed Cloud MCP servers - XDG-compliant profile management",
   "type": "module",
   "main": "dist/index.js",
