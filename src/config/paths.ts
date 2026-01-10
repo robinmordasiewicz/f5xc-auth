@@ -1,3 +1,5 @@
+// Copyright (c) 2026 Robin Mordasiewicz. MIT License.
+
 /**
  * XDG Base Directory compliant paths for F5 XC configuration
  * See: https://specifications.freedesktop.org/basedir/latest/

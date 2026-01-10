@@ -1,3 +1,5 @@
+// Copyright (c) 2026 Robin Mordasiewicz. MIT License.
+
 /**
  * Authenticated HTTP Client for F5 Distributed Cloud API
  *
