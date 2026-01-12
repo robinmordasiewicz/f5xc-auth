@@ -105,3 +105,4 @@ nav:
       - Multi-Tenant: examples/multi-tenant.md
       - Resource Monitor: examples/resource-monitor.md
   - Troubleshooting: troubleshooting.md
+  - Contributing: contributing.md
