@@ -48,14 +48,20 @@ All commits must follow the [Conventional Commits](https://www.conventionalcommi
 | Type | Description | Version Bump | Example |
 |------|-------------|--------------|---------|
 | `feat` | New feature | **Minor** (1.x.0) | `feat: add certificate validation` |
+| `feat(auth)` | Auth feature | **Minor** (1.x.0) | `feat(auth): add JWT support` |
 | `fix` | Bug fix | **Patch** (1.0.x) | `fix: resolve token expiration issue` |
+| `fix(auth)` | Auth bug fix | **Patch** (1.0.x) | `fix(auth): handle null tenant` |
 | `docs` | Documentation | **Patch** (1.0.x) | `docs: update authentication guide` |
 | `perf` | Performance improvement | **Patch** (1.0.x) | `perf: optimize HTTP client caching` |
 | `refactor` | Code refactoring | **Patch** (1.0.x) | `refactor: simplify profile loading logic` |
+| `style` | Code style | **Patch** (1.0.x) | `style: fix formatting` |
 | `test` | Tests only | **No release** | `test: add profile manager tests` |
+| `test(auth)` | Auth tests | **Patch** (1.0.x) | `test(auth): add credential tests` |
 | `chore` | Maintenance | **No release** | `chore: update dependencies` |
+| `chore(auth)` | Auth maintenance | **Patch** (1.0.x) | `chore(auth): update auth logic` |
 | `ci` | CI/CD changes | **No release** | `ci: update release workflow` |
 | `build` | Build system | **No release** | `build: update TypeScript config` |
+| `build(auth)` | Auth build | **Patch** (1.0.x) | `build(auth): compile auth module` |
 
 ### Breaking Changes
 
@@ -69,14 +75,41 @@ BREAKING CHANGE: The `authenticate()` method now returns a Promise<AuthResult> i
 
 This will trigger a **Major** version bump (x.0.0).
 
+### Auth Scope Rule (Special Behavior)
+
+**Important**: Any commit with scope `(auth)` will **always trigger a release**, regardless of type.
+
+This ensures that any changes to authentication code are immediately released:
+
+| Commit | Normal Behavior | With `(auth)` Scope |
+|--------|----------------|---------------------|
+| `test: add tests` | No release | No release |
+| `test(auth): add auth tests` | No release | **Patch release** (1.0.x) |
+| `chore: update deps` | No release | No release |
+| `chore(auth): refactor auth code` | No release | **Patch release** (1.0.x) |
+| `build: update config` | No release | No release |
+| `build(auth): update auth build` | No release | **Patch release** (1.0.x) |
+
+**Why?** The auth module is critical for security and functionality. Any changes to it should be immediately available to users, even if it's just test additions or internal refactoring.
+
+**When to use `(auth)` scope:**
+- Changes to `src/auth/` directory
+- Changes affecting authentication logic
+- Security-related updates
+- Credential management modifications
+
 ### Examples
 
 **Good commits:**
 ```bash
 feat: add support for custom CA bundles
+feat(auth): add JWT token validation
 fix: handle undefined namespace in profile
+fix(auth): resolve credential loading race condition
 docs: add troubleshooting section for TLS errors
 perf: reduce HTTP client initialization time
+test(auth): add comprehensive auth flow tests
+chore(auth): refactor credential manager internals
 ```
 
 **Bad commits:**
@@ -192,6 +225,20 @@ BREAKING CHANGE: Complete API redesign. See migration guide.
 ```
 
 Result: `1.1.0` → `2.0.0`
+
+### Auth-Scoped Patch Release (1.0.x)
+
+Even infrastructure commits to auth code trigger releases:
+
+Commits:
+```
+test(auth): add credential validation tests
+chore(auth): refactor token handling
+```
+
+Result: `1.0.1` → `1.0.2`
+
+**Why this matters**: Auth changes need immediate availability for security and stability, even if they're just tests or internal improvements.
 
 ---
 
