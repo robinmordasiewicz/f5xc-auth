@@ -26,11 +26,7 @@ theme:
     text: Inter
     code: JetBrains Mono
   features:
-    - navigation.tabs
-    - navigation.indexes
-    - navigation.path
     - navigation.top
-    - navigation.footer
     - navigation.instant
     - navigation.tracking
     - search.suggest
@@ -40,7 +36,6 @@ theme:
     - content.code.annotate
     - content.tabs.link
     - toc.follow
-    - header.autohide
   icon:
     repo: fontawesome/brands/github
     logo: material/key-chain
@@ -83,22 +78,3 @@ extra:
 
 extra_css:
   - stylesheets/extra.css
-
-nav:
-  - Home: index.md
-  - Getting Started:
-      - getting-started/index.md
-      - Installation: getting-started/installation.md
-      - Quick Start: getting-started/quickstart.md
-      - Configuration: getting-started/configuration.md
-  - API Reference:
-      - api/index.md
-      - CredentialManager: api/credential-manager.md
-      - ProfileManager: api/profile-manager.md
-      - HTTP Client: api/http-client.md
-  - Guides:
-      - guides/index.md
-      - Authentication Methods: guides/authentication.md
-      - Profile Management: guides/profiles.md
-      - Environment Variables: guides/environment.md
-      - Security: guides/security.md
