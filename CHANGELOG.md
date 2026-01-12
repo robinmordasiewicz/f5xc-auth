@@ -1,3 +1,17 @@
+## [1.1.0](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.0.1...v1.1.0) (2026-01-12)
+
+### ✨ Features
+
+* add missing navigation features to Material theme ([490da95](https://github.com/robinmordasiewicz/f5xc-auth/commit/490da95ac0b937dec2ce928bd653def089b97378)), closes [#14](https://github.com/robinmordasiewicz/f5xc-auth/issues/14)
+* auto-bump patch version for auth-scoped commits ([a470d71](https://github.com/robinmordasiewicz/f5xc-auth/commit/a470d71cb86f97fb36cfcb880163c907210a1fa3)), closes [#21](https://github.com/robinmordasiewicz/f5xc-auth/issues/21)
+
+### 📚 Documentation
+
+* add Material for MkDocs documentation site ([4327d9b](https://github.com/robinmordasiewicz/f5xc-auth/commit/4327d9bd55ea7d40848385bcbe583ec2757e20cd)), closes [#4](https://github.com/robinmordasiewicz/f5xc-auth/issues/4)
+* apply complete F5 Distributed Cloud documentation theme ([384dc5a](https://github.com/robinmordasiewicz/f5xc-auth/commit/384dc5a317baea872eadb49c56b300b9d67ec76b)), closes [#4f73ff](https://github.com/robinmordasiewicz/f5xc-auth/issues/4f73ff) [#0d1117](https://github.com/robinmordasiewicz/f5xc-auth/issues/0d1117) [#8](https://github.com/robinmordasiewicz/f5xc-auth/issues/8)
+* convert to single-page developer-focused documentation ([28eb315](https://github.com/robinmordasiewicz/f5xc-auth/commit/28eb315945365566d9809542c9c97880e20e79d4)), closes [#12](https://github.com/robinmordasiewicz/f5xc-auth/issues/12)
+* restructure documentation to multi-page layout ([7c5c785](https://github.com/robinmordasiewicz/f5xc-auth/commit/7c5c7852d4d3daf0139a7265674c13404561096f)), closes [#16](https://github.com/robinmordasiewicz/f5xc-auth/issues/16)
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
