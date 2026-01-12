@@ -26,7 +26,9 @@ theme:
     text: Inter
     code: JetBrains Mono
   features:
+    - navigation.tabs
     - navigation.indexes
+    - navigation.path
     - navigation.top
     - navigation.footer
     - navigation.instant
@@ -81,3 +83,25 @@ extra:
 
 extra_css:
   - stylesheets/extra.css
+
+nav:
+  - Home: index.md
+  - Authentication: authentication.md
+  - Guides:
+      - guides/index.md
+      - Quick Start: guides/quick-start.md
+      - Profile Management: guides/profile-management.md
+      - HTTP Client: guides/http-client.md
+      - Environment Variables: guides/environment-variables.md
+  - API:
+      - api/index.md
+      - CredentialManager: api/credential-manager.md
+      - ProfileManager: api/profile-manager.md
+      - HTTP Client: api/http-client.md
+  - Examples:
+      - examples/index.md
+      - CLI Tool: examples/cli-tool.md
+      - Profile Switcher: examples/profile-switcher.md
+      - Multi-Tenant: examples/multi-tenant.md
+      - Resource Monitor: examples/resource-monitor.md
+  - Troubleshooting: troubleshooting.md
