@@ -12,6 +12,7 @@
  *
  * @module credential-manager
  * @since 1.0.0
+ * @packageDocumentation
  */
 
 import { readFileSync } from "fs";
