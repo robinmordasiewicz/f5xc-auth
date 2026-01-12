@@ -9,6 +9,9 @@
  * - Execution mode: API token or P12/Certificate authentication
  *
  * Uses XDG-compliant profile storage at ~/.config/f5xc/
+ *
+ * @module credential-manager
+ * @since 1.0.0
  */
 
 import { readFileSync } from "fs";
