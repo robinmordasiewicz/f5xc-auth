@@ -1,0 +1,62 @@
+{
+  "name": "@robinmordasiewicz/f5xc-auth",
+  "version": "1.0.1",
+  "description": "Shared authentication library for F5 Distributed Cloud MCP servers - XDG-compliant profile management",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "f5",
+    "f5xc",
+    "f5-distributed-cloud",
+    "authentication",
+    "xdg",
+    "profile-management",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "author": "Robin Mordasiewicz",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robinmordasiewicz/f5xc-auth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/robinmordasiewicz/f5xc-auth/issues"
+  },
+  "homepage": "https://github.com/robinmordasiewicz/f5xc-auth#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.0",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.1",
+    "@types/node": "^22.10.0",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "semantic-release": "^24.2.0",
+    "typescript": "^5.7.2",
+    "vitest": "^4.0.16"
+  }
+}

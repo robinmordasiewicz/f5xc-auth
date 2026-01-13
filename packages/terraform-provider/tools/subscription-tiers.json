@@ -1,0 +1,254 @@
+{
+  "generated_at": "2026-01-05T18:42:11Z",
+  "source": "F5 XC Catalog API",
+  "services": {
+    "client-side-defense": {
+      "tier": "NO_TIER",
+      "display_name": "Client-Side Defense"
+    },
+    "data-intelligence": {
+      "tier": "NO_TIER",
+      "display_name": "Data Intelligence"
+    },
+    "f5xc-ai-assistant": {
+      "tier": "NO_TIER",
+      "display_name": "AI Assistant"
+    },
+    "f5xc-ai-assistant-standard": {
+      "tier": "STANDARD",
+      "display_name": "F5XC AI Assistant Standard",
+      "group_name": "f5xc-ai-assistant"
+    },
+    "f5xc-application-traffic-insight": {
+      "tier": "NO_TIER",
+      "display_name": "Application Traffic Insight"
+    },
+    "f5xc-application-traffic-insight-standard": {
+      "tier": "NO_TIER",
+      "display_name": "Application Traffic Insight",
+      "group_name": "f5xc-application-traffic-insight"
+    },
+    "f5xc-appstack": {
+      "tier": "NO_TIER",
+      "display_name": "App Stack"
+    },
+    "f5xc-appstack-standard": {
+      "tier": "NO_TIER",
+      "display_name": "App Stack",
+      "group_name": "f5xc-appstack"
+    },
+    "f5xc-big-ip-irule": {
+      "tier": "NO_TIER",
+      "display_name": "iRules"
+    },
+    "f5xc-big-ip-irule-standard": {
+      "tier": "NO_TIER",
+      "display_name": "iRules",
+      "group_name": "f5xc-big-ip-irule"
+    },
+    "f5xc-bigip-utilities": {
+      "tier": "NO_TIER",
+      "display_name": "iHealth"
+    },
+    "f5xc-bigip-utilities-standard": {
+      "tier": "NO_TIER",
+      "display_name": "BIG-IP Utilities",
+      "group_name": "f5xc-bigip-utilities"
+    },
+    "f5xc-bot-defense": {
+      "tier": "NO_TIER",
+      "display_name": "Bot Defense"
+    },
+    "f5xc-bot-defense-advanced": {
+      "tier": "ADVANCED",
+      "display_name": "Bot Defense Advanced (coming soon)",
+      "group_name": "f5xc-bot-defense"
+    },
+    "f5xc-bot-defense-standard": {
+      "tier": "STANDARD",
+      "display_name": "Bot Defense Standard",
+      "group_name": "f5xc-bot-defense"
+    },
+    "f5xc-client-side-defense-standard": {
+      "tier": "NO_TIER",
+      "display_name": "Client-Side Defense (Preview)",
+      "group_name": "client-side-defense"
+    },
+    "f5xc-console-advanced": {
+      "tier": "ADVANCED",
+      "display_name": "F5XC Console Advanced",
+      "group_name": "f5xc-console-base"
+    },
+    "f5xc-console-base": {
+      "tier": "ADVANCED",
+      "display_name": "Console"
+    },
+    "f5xc-console-basic": {
+      "tier": "BASIC",
+      "display_name": "F5XC Console Basic",
+      "group_name": "f5xc-console-base"
+    },
+    "f5xc-console-standard": {
+      "tier": "STANDARD",
+      "display_name": "F5XC Console Standard",
+      "group_name": "f5xc-console-base"
+    },
+    "f5xc-content-delivery-network-standard": {
+      "tier": "STANDARD",
+      "display_name": "Content Delivery Network",
+      "group_name": "lilac-cdn"
+    },
+    "f5xc-core-platform-services": {
+      "tier": "ADVANCED",
+      "display_name": "Core Platform Services"
+    },
+    "f5xc-core-platform-services-advanced": {
+      "tier": "ADVANCED",
+      "display_name": "F5XC Core Platform Services Advanced",
+      "group_name": "f5xc-core-platform-services"
+    },
+    "f5xc-core-platform-services-standard": {
+      "tier": "STANDARD",
+      "display_name": "F5XC Core Platform Services Standard",
+      "group_name": "f5xc-core-platform-services"
+    },
+    "f5xc-data-intelligence-standard": {
+      "tier": "NO_TIER",
+      "display_name": "Data Intelligence",
+      "group_name": "data-intelligence"
+    },
+    "f5xc-delegated-access-standard": {
+      "tier": "NO_TIER",
+      "display_name": "Delegated Access",
+      "group_name": "ves-io-tenant-management"
+    },
+    "f5xc-dns": {
+      "tier": "NO_TIER",
+      "display_name": "DNS"
+    },
+    "f5xc-dns-standard": {
+      "tier": "NO_TIER",
+      "display_name": "DNS Management",
+      "group_name": "f5xc-dns"
+    },
+    "f5xc-malware-protection": {
+      "tier": "NO_TIER",
+      "display_name": "Malware Protection"
+    },
+    "f5xc-malware-protection-standard": {
+      "tier": "STANDARD",
+      "display_name": "Malware Protection",
+      "group_name": "f5xc-malware-protection"
+    },
+    "f5xc-mobile-app-shield": {
+      "tier": "NO_TIER",
+      "display_name": "Mobile App Shield"
+    },
+    "f5xc-mobile-app-shield-standard": {
+      "tier": "STANDARD",
+      "display_name": "Mobile App Shield",
+      "group_name": "f5xc-mobile-app-shield"
+    },
+    "f5xc-mobile-integrator": {
+      "tier": "NO_TIER",
+      "display_name": "Mobile Integrator"
+    },
+    "f5xc-mobile-integrator-standard": {
+      "tier": "STANDARD",
+      "display_name": "Mobile SDK Integrator",
+      "group_name": "f5xc-mobile-integrator"
+    },
+    "f5xc-nginx-one-standard": {
+      "tier": "STANDARD",
+      "display_name": "NGINX One Console",
+      "group_name": "nginx-one"
+    },
+    "f5xc-routed-ddos": {
+      "tier": "NO_TIER",
+      "display_name": "Routed DDoS"
+    },
+    "f5xc-routed-ddos-standard": {
+      "tier": "NO_TIER",
+      "display_name": "Routed DDoS",
+      "group_name": "f5xc-routed-ddos"
+    },
+    "f5xc-securemesh": {
+      "tier": "ADVANCED",
+      "display_name": "Secure Mesh"
+    },
+    "f5xc-securemesh-advanced": {
+      "tier": "ADVANCED",
+      "display_name": "Secure Mesh Advanced",
+      "group_name": "f5xc-securemesh"
+    },
+    "f5xc-securemesh-standard": {
+      "tier": "STANDARD",
+      "display_name": "Secure Mesh Standard",
+      "group_name": "f5xc-securemesh"
+    },
+    "f5xc-site-management": {
+      "tier": "NO_TIER",
+      "display_name": "Site Management"
+    },
+    "f5xc-site-management-standard": {
+      "tier": "NO_TIER",
+      "display_name": "Site Management Standard",
+      "group_name": "f5xc-site-management"
+    },
+    "f5xc-synthetic-monitoring-standard": {
+      "tier": "NO_TIER",
+      "display_name": "Synthetic Monitoring",
+      "group_name": "synthetic-monitor"
+    },
+    "f5xc-waap": {
+      "tier": "ADVANCED",
+      "display_name": "Web App \u0026 API Protection"
+    },
+    "f5xc-waap-advanced": {
+      "tier": "ADVANCED",
+      "display_name": "Web Application and API Protection (WAAP) Advanced",
+      "group_name": "f5xc-waap"
+    },
+    "f5xc-waap-standard": {
+      "tier": "STANDARD",
+      "display_name": "Web Application and API Protection (WAAP) Standard",
+      "group_name": "f5xc-waap"
+    },
+    "f5xc-web-app-scanning": {
+      "tier": "NO_TIER",
+      "display_name": "Web App Scanning"
+    },
+    "f5xc-web-app-scanning-standard": {
+      "tier": "STANDARD",
+      "display_name": "Web App Scanning Standard",
+      "group_name": "f5xc-web-app-scanning"
+    },
+    "lilac-cdn": {
+      "tier": "NO_TIER",
+      "display_name": "Content Delivery Network"
+    },
+    "nginx-one": {
+      "tier": "NO_TIER",
+      "display_name": "NGINX One Console"
+    },
+    "safeap": {
+      "tier": "NO_TIER",
+      "display_name": "Account Protection",
+      "group_name": "safeap"
+    },
+    "shape-recognize": {
+      "tier": "NO_TIER",
+      "display_name": "Authentication Intelligence",
+      "group_name": "shape-recognize"
+    },
+    "synthetic-monitor": {
+      "tier": "NO_TIER",
+      "display_name": "Synthetic Monitoring"
+    },
+    "ves-io-tenant-management": {
+      "tier": "NO_TIER",
+      "display_name": "Delegated Access"
+    }
+  },
+  "resources": {}
+}
