@@ -28,3 +28,28 @@ coverage/
 
 # MkDocs build output
 site/
+
+# Monorepo
+packages/*/dist/
+packages/*/node_modules/
+packages/*/.vscode/
+packages/*/.idea/
+
+# Go (Terraform Provider)
+*.so
+*.dylib
+*.dll
+*.exe
+bin/
+dist/
+terraform-plugin-debug.log
+crash.log
+
+# Terraform
+.terraform/
+*.tfstate*
+*.tfvars
+override.tf.json
+
+# Generated files
+generate-*

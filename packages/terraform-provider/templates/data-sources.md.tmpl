@@ -1,0 +1,31 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+~> **Note** For more information about this data source, please refer to the [F5 XC API Documentation](https://docs.cloud.f5.com/docs/api/).
+
+## Example Usage
+
+{{ if .HasExamples }}
+{{ range .ExampleFiles }}
+{{ tffile . }}
+{{ end }}
+{{ else }}
+
+```terraform
+data "{{ .Name }}" "example" {
+  name      = "example-resource"
+  namespace = "system"
+}
+```
+
+{{ end }}
+
+{{ .SchemaMarkdown | trimspace }}

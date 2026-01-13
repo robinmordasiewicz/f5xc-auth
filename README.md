@@ -1,153 +1,131 @@
-# @robinmordasiewicz/f5xc-auth
+# F5 Distributed Cloud Monorepo
+
+Unified monorepo combining F5 Distributed Cloud authentication, Terraform provider, and API MCP server.
+
+## Packages
+
+This monorepo contains three main packages:
+
+### 1. [@robinmordasiewicz/f5xc-auth](./packages/f5xc-auth/)
 
 Shared authentication library for F5 Distributed Cloud MCP servers. Provides XDG-compliant profile management and credential handling.
 
-## Installation
+- **NPM**: `@robinmordasiewicz/f5xc-auth`
+- **Features**: API token, P12 certificate, cert/key authentication, profile management, URL normalization
+- **Directory**: `packages/f5xc-auth/`
+
+### 2. [@robinmordasiewicz/f5xc-api-mcp](./packages/f5xc-api-mcp/)
+
+MCP (Model Context Protocol) server that exposes F5 Distributed Cloud APIs to AI assistants. Enables natural language interaction with F5XC infrastructure through Claude, VS Code, and other MCP-compatible tools.
+
+- **NPM**: `@robinmordasiewicz/f5xc-api-mcp`
+- **Features**: 1500+ API tools, domain-based documentation, dual-mode operation (docs + execution), curl examples
+- **Directory**: `packages/f5xc-api-mcp/`
+
+### 3. [Terraform Provider for F5 Distributed Cloud](./packages/terraform-provider/)
+
+Community Terraform provider for F5 Distributed Cloud (version 3.0.0 - clean break release).
+
+- **Registry**: `robinmordasiewicz/f5xc`
+- **Features**: API v2 based, 98+ resources available, import support, pre-release clean break
+- **Directory**: `packages/terraform-provider/`
+- **Language**: Go
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js >= 18.0.0
+- npm >= 7.0.0 (for workspace support)
+- Go >= 1.22 (for Terraform provider development)
+
+### Installation
+
+Clone the repository:
 
 ```bash
-npm install @robinmordasiewicz/f5xc-auth
+git clone https://github.com/robinmordasiewicz/f5xc.git
+cd f5xc
 ```
 
-## Features
+Install dependencies for all packages:
 
-- **XDG-compliant profile storage** - Profiles stored in `~/.config/f5xc/profiles/`
-- **Multiple authentication methods** - API token, P12 certificate, or cert/key pair
-- **Environment variable priority** - Override profile settings with environment variables
-- **URL normalization** - Handles various F5XC tenant URL formats
-- **TLS configuration** - Custom CA bundles and insecure mode for staging
-
-## Usage
-
-### Basic Authentication
-
-```typescript
-import { CredentialManager } from '@robinmordasiewicz/f5xc-auth';
-
-const credentialManager = new CredentialManager();
-await credentialManager.initialize();
-
-if (credentialManager.isAuthenticated()) {
-  console.log(`Authenticated as: ${credentialManager.getTenant()}`);
-  console.log(`API URL: ${credentialManager.getApiUrl()}`);
-  console.log(`Namespace: ${credentialManager.getNamespace()}`);
-}
+```bash
+npm install
 ```
 
-### Profile Management
+### Development
 
-```typescript
-import { getProfileManager } from '@robinmordasiewicz/f5xc-auth';
+Run tests across all packages:
 
-const profileManager = getProfileManager();
-
-// List all profiles
-const profiles = await profileManager.list();
-
-// Get active profile
-const active = await profileManager.getActiveProfile();
-
-// Save a new profile
-await profileManager.save({
-  name: 'production',
-  apiUrl: 'https://mytenant.console.ves.volterra.io',
-  apiToken: 'my-api-token',
-  defaultNamespace: 'my-namespace'
-});
-
-// Switch profiles
-await profileManager.setActive('production');
+```bash
+npm test
 ```
 
-### HTTP Client
+Build all packages:
 
-```typescript
-import { CredentialManager, createHttpClient } from '@robinmordasiewicz/f5xc-auth';
-
-const credentialManager = new CredentialManager();
-await credentialManager.initialize();
-
-const httpClient = createHttpClient(credentialManager, {
-  timeout: 30000,
-  debug: true
-});
-
-if (httpClient.isAvailable()) {
-  const response = await httpClient.get('/web/namespaces');
-  console.log(response.data);
-}
+```bash
+npm run build
 ```
 
-## Environment Variables
+Lint all packages:
 
-| Variable | Description |
-|----------|-------------|
-| `F5XC_API_URL` | F5 XC tenant URL |
-| `F5XC_API_TOKEN` | API token for authentication |
-| `F5XC_P12_BUNDLE` | Path to P12 certificate bundle |
-| `F5XC_CERT` | Path to certificate file |
-| `F5XC_KEY` | Path to private key file |
-| `F5XC_NAMESPACE` | Default namespace |
-| `F5XC_TLS_INSECURE` | Disable TLS verification (staging only) |
-| `F5XC_CA_BUNDLE` | Path to custom CA bundle |
-
-Environment variables take priority over profile settings.
-
-## Credential Priority
-
-1. **Environment variables** (highest priority)
-2. **Active profile** from `~/.config/f5xc/`
-3. **Documentation mode** (no credentials - lowest priority)
-
-## Profile Format
-
-Profiles are stored as JSON files in `~/.config/f5xc/profiles/`:
-
-```json
-{
-  "name": "production",
-  "apiUrl": "https://mytenant.console.ves.volterra.io",
-  "apiToken": "your-api-token",
-  "defaultNamespace": "my-namespace"
-}
+```bash
+npm run lint
 ```
 
-### Authentication Methods
+### Working with Individual Packages
 
-**API Token:**
-```json
-{
-  "name": "token-auth",
-  "apiUrl": "https://mytenant.console.ves.volterra.io",
-  "apiToken": "your-api-token"
-}
+Change into a package directory and work as normal:
+
+```bash
+cd packages/f5xc-auth
+npm install
+npm run build
+npm test
 ```
 
-**P12 Certificate:**
-```json
-{
-  "name": "p12-auth",
-  "apiUrl": "https://mytenant.console.ves.volterra.io",
-  "p12Bundle": "/path/to/certificate.p12"
-}
+## Architecture
+
+The monorepo structure uses npm workspaces to manage three interdependent components:
+
+```
+f5xc/
+├── packages/
+│   ├── f5xc-auth/              # Core authentication library (TypeScript)
+│   ├── f5xc-api-mcp/           # MCP server wrapper (TypeScript)
+│   └── terraform-provider/     # Terraform provider (Go)
+├── package.json                # Workspace root configuration
+├── README.md                   # This file
+└── .github/                    # GitHub workflows
 ```
 
-**Cert + Key:**
-```json
-{
-  "name": "cert-auth",
-  "apiUrl": "https://mytenant.console.ves.volterra.io",
-  "cert": "/path/to/certificate.pem",
-  "key": "/path/to/private-key.pem"
-}
-```
+## Authentication Flow
 
-## Security
+1. **f5xc-auth**: Handles credential management and profile storage
+2. **f5xc-api-mcp**: Uses f5xc-auth for API authentication
+3. **terraform-provider**: Can use f5xc-auth patterns for credential handling
 
-- Profile files are created with `0o600` permissions (owner read/write only)
-- Config directory uses `0o700` permissions
-- Tokens are masked when displayed (showing only last 4 characters)
-- TLS insecure mode requires explicit opt-in
+## Documentation
+
+- [f5xc-auth Documentation](./packages/f5xc-auth/docs/)
+- [f5xc-api-mcp Documentation](./packages/f5xc-api-mcp/)
+- [Terraform Provider Documentation](./packages/terraform-provider/)
 
 ## License
 
-MIT
+MIT - See individual package LICENSE files for details.
+
+## Contributing
+
+See [Contributing Guidelines](./packages/f5xc-auth/docs/contributing.md) in the f5xc-auth package.
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/robinmordasiewicz/f5xc/issues)
+- **F5 Distributed Cloud Docs**: https://docs.cloud.f5.com/
+- **Terraform Registry**: https://registry.terraform.io/providers/robinmordasiewicz/f5xc/
+
+## Author
+
+Robin Mordasiewicz
