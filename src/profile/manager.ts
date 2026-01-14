@@ -11,6 +11,7 @@ import { join } from "path";
 import YAML from "yaml";
 import { paths } from "../config/paths.js";
 import type { Profile, ProfileConfig, ProfileResult } from "./types.js";
+import { SimpleCache } from "../utils/cache.js";
 
 /**
  * Convert snake_case to camelCase
@@ -35,6 +36,7 @@ function convertKeysToCamelCase(obj: Record<string, unknown>): Record<string, un
  */
 export class ProfileManager {
   private config: ProfileConfig;
+  private cache: SimpleCache<Profile>;
 
   constructor() {
     this.config = {
@@ -42,6 +44,8 @@ export class ProfileManager {
       profilesDir: paths.profilesDir,
       activeProfileFile: paths.activeProfile,
     };
+    // Initialize cache with 5-minute TTL
+    this.cache = new SimpleCache<Profile>({ defaultTtl: 300000 });
   }
 
   /**
@@ -128,6 +132,12 @@ export class ProfileManager {
   async get(name: string): Promise<Profile | null> {
     await this.ensureDirectories();
 
+    // Check cache first
+    const cached = this.cache.get(name);
+    if (cached) {
+      return cached;
+    }
+
     // Try different file extensions in order of preference
     const extensions = [".json", ".yaml", ".yml"];
 
@@ -145,7 +155,10 @@ export class ProfileManager {
           parsed = convertKeysToCamelCase(parsed);
         }
 
-        return parsed as unknown as Profile;
+        const profile = parsed as unknown as Profile;
+        // Cache the profile for future use
+        this.cache.set(name, profile);
+        return profile;
       } catch {
         // Try next extension
         continue;
@@ -192,6 +205,9 @@ export class ProfileManager {
       // Write with secure permissions (owner read/write only)
       await fs.writeFile(path, data, { mode: 0o600 });
 
+      // Invalidate cache for this profile
+      this.cache.invalidate(profile.name);
+
       return {
         success: true,
         message: `Profile '${profile.name}' saved successfully.`,
@@ -232,6 +248,9 @@ export class ProfileManager {
     try {
       const path = this.getProfilePath(name);
       await fs.unlink(path);
+
+      // Invalidate cache for deleted profile
+      this.cache.invalidate(name);
 
       return {
         success: true,
@@ -318,6 +337,62 @@ export class ProfileManager {
   async exists(name: string): Promise<boolean> {
     const profile = await this.get(name);
     return profile !== null;
+  }
+
+  /**
+   * Rotate credentials for a profile
+   *
+   * Updates the profile with new credentials and sets rotation metadata.
+   * Automatically updates lastRotated timestamp and calculates new expiresAt
+   * if rotateAfterDays is set.
+   *
+   * @param name - Profile name
+   * @param newCredentials - New credential values (token, cert, key, p12Bundle)
+   * @returns ProfileResult indicating success or failure
+   */
+  async rotateCredential(
+    name: string,
+    newCredentials: Partial<Pick<Profile, "apiToken" | "p12Bundle" | "cert" | "key">>
+  ): Promise<ProfileResult> {
+    await this.ensureDirectories();
+
+    // Get existing profile
+    const profile = await this.get(name);
+    if (!profile) {
+      return {
+        success: false,
+        message: `Profile '${name}' not found.`,
+      };
+    }
+
+    // Update credentials
+    const now = new Date().toISOString();
+    const rotateAfterDays = profile.metadata?.rotateAfterDays;
+
+    const updated: Profile = {
+      ...profile,
+      ...newCredentials,
+      metadata: {
+        ...profile.metadata,
+        lastRotated: now,
+        // Calculate new expiration if rotateAfterDays is set
+        expiresAt: rotateAfterDays
+          ? new Date(Date.now() + rotateAfterDays * 24 * 60 * 60 * 1000).toISOString()
+          : profile.metadata?.expiresAt,
+      },
+    };
+
+    // Save updated profile
+    const result = await this.save(updated);
+    if (result.success) {
+      return {
+        success: true,
+        message: `Credentials rotated successfully for profile '${name}'.`,
+        profile: updated,
+      };
+    }
+
+    return result;
   }
 
   /**

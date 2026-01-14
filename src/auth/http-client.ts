@@ -17,6 +17,7 @@ import https from "https";
 import { CredentialManager, AuthMode } from "./credential-manager.js";
 import { logger } from "../utils/logging.js";
 import { F5XCApiError, AuthenticationError, wrapSSLError } from "../utils/errors.js";
+import { sanitizeUrlForLog } from "../utils/path-security.js";
 
 /**
  * HTTP client configuration options
@@ -28,6 +29,24 @@ export interface HttpClientConfig {
   headers?: Record<string, string>;
   /** Enable request/response logging */
   debug?: boolean;
+  /** Rate limiting configuration */
+  rateLimit?: {
+    /** Maximum requests per time window */
+    maxRequests?: number;
+    /** Time window in milliseconds */
+    perMilliseconds?: number;
+    /** Maximum concurrent requests */
+    maxConcurrent?: number;
+  };
+  /** Retry configuration */
+  retry?: {
+    /** Number of retry attempts */
+    retries?: number;
+    /** Retry delay strategy: 'exponential' or 'linear' */
+    retryDelay?: "exponential" | "linear";
+    /** HTTP status codes to retry on */
+    retryOn?: number[];
+  };
 }
 
 /**
@@ -37,6 +56,16 @@ const DEFAULT_CONFIG: Required<HttpClientConfig> = {
   timeout: 30000, // 30 seconds
   headers: {},
   debug: false,
+  rateLimit: {
+    maxRequests: 10,
+    perMilliseconds: 1000,
+    maxConcurrent: 5,
+  },
+  retry: {
+    retries: 3,
+    retryDelay: "exponential",
+    retryOn: [429, 500, 502, 503, 504],
+  },
 };
 
 /**
@@ -54,6 +83,91 @@ export interface ApiResponse<T = unknown> {
 }
 
 /**
+ * Token Bucket Rate Limiter
+ * Implements token bucket algorithm for rate limiting requests
+ */
+class TokenBucket {
+  private tokens: number;
+  private lastRefill: number;
+  private readonly capacity: number;
+  private readonly refillRate: number; // tokens per second
+
+  constructor(capacity: number, refillRate: number) {
+    this.capacity = capacity;
+    this.refillRate = refillRate;
+    this.tokens = capacity;
+    this.lastRefill = Date.now();
+  }
+
+  /**
+   * Consume tokens and wait if necessary
+   * @param tokens Number of tokens to consume (default: 1)
+   * @returns Promise that resolves when tokens are available
+   */
+  async consume(tokens: number = 1): Promise<void> {
+    this.refill();
+
+    if (this.tokens < tokens) {
+      const waitTime = ((tokens - this.tokens) / this.refillRate) * 1000;
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+      this.refill();
+    }
+
+    this.tokens -= tokens;
+  }
+
+  /**
+   * Refill tokens based on elapsed time
+   */
+  private refill(): void {
+    const now = Date.now();
+    const elapsed = (now - this.lastRefill) / 1000;
+    const tokensToAdd = elapsed * this.refillRate;
+
+    this.tokens = Math.min(this.capacity, this.tokens + tokensToAdd);
+    this.lastRefill = now;
+  }
+}
+
+/**
+ * Concurrent request limiter
+ * Limits the number of concurrent requests
+ */
+class ConcurrentLimiter {
+  private active = 0;
+  private queue: Array<() => void> = [];
+
+  constructor(private readonly maxConcurrent: number) {}
+
+  /**
+   * Acquire a slot for request execution
+   * @returns Promise that resolves when slot is available
+   */
+  async acquire(): Promise<void> {
+    if (this.active < this.maxConcurrent) {
+      this.active++;
+      return;
+    }
+
+    return new Promise(resolve => {
+      this.queue.push(resolve);
+    });
+  }
+
+  /**
+   * Release a slot after request completion
+   */
+  release(): void {
+    this.active--;
+    const next = this.queue.shift();
+    if (next) {
+      this.active++;
+      next();
+    }
+  }
+}
+
+/**
  * HTTP Client for F5XC API
  *
  * Creates and manages an authenticated Axios instance for making
@@ -63,10 +177,100 @@ export class HttpClient {
   private client: AxiosInstance | null = null;
   private credentialManager: CredentialManager;
   private config: Required<HttpClientConfig>;
+  private rateLimiter: TokenBucket;
+  private concurrentLimiter: ConcurrentLimiter;
 
+  /**
+   * Creates an HTTP client for F5 Distributed Cloud API requests.
+   *
+   * The client automatically:
+   * - Injects authentication credentials from the credential manager
+   * - Adds required headers (User-Agent, Content-Type)
+   * - Configures SSL/TLS settings (including custom CA and insecure mode)
+   * - Applies rate limiting (10 req/sec, 5 concurrent by default)
+   * - Implements retry logic with exponential backoff (3 retries)
+   * - Transforms responses to typed ApiResponse objects
+   * - Handles common error scenarios with actionable guidance
+   *
+   * @param credentialManager - Manages authentication credentials and profiles.
+   *   Must be initialized before creating the HTTP client.
+   * @param config - Optional HTTP client configuration
+   * @param config.timeout - Request timeout in milliseconds (default: 30000)
+   * @param config.headers - Additional headers to include in all requests
+   * @param config.debug - Enable request/response logging (default: false)
+   * @param config.rateLimit - Rate limiting configuration
+   * @param config.rateLimit.maxRequests - Maximum requests per time window (default: 10)
+   * @param config.rateLimit.perMilliseconds - Time window in milliseconds (default: 1000)
+   * @param config.rateLimit.maxConcurrent - Maximum concurrent requests (default: 5)
+   * @param config.retry - Retry configuration
+   * @param config.retry.retries - Number of retry attempts (default: 3)
+   * @param config.retry.retryDelay - Retry delay strategy: 'exponential' or 'linear' (default: 'exponential')
+   * @param config.retry.retryOn - HTTP status codes to retry on (default: [429, 500, 502, 503, 504])
+   *
+   * @example Basic usage
+   * ```typescript
+   * const cm = new CredentialManager();
+   * await cm.initialize();
+   *
+   * const client = new HttpClient(cm);
+   * const response = await client.get("/api/config/namespaces");
+   * console.log(response.data);
+   * ```
+   *
+   * @example Custom configuration
+   * ```typescript
+   * const client = new HttpClient(cm, {
+   *   timeout: 60000,
+   *   headers: { "X-Custom-Header": "value" },
+   *   rateLimit: {
+   *     maxRequests: 20,
+   *     perMilliseconds: 1000,
+   *     maxConcurrent: 10
+   *   }
+   * });
+   * ```
+   *
+   * @example With request options
+   * ```typescript
+   * const response = await client.get<Namespace[]>(
+   *   "/api/config/namespaces/system/virtual-hosts",
+   *   { params: { filter: "active" } }
+   * );
+   * ```
+   *
+   * @example Custom retry configuration
+   * ```typescript
+   * const client = new HttpClient(cm, {
+   *   retry: {
+   *     retries: 5,
+   *     retryDelay: "linear",
+   *     retryOn: [429, 500, 503]
+   *   }
+   * });
+   * ```
+   *
+   * @throws {AuthenticationError} If credentials are invalid or missing when making requests
+   * @throws {F5XCApiError} For API request failures (4xx, 5xx status codes)
+   * @throws {SSLCertificateError} For SSL/TLS certificate validation failures
+   * @throws {NetworkError} For network connectivity issues
+   */
   constructor(credentialManager: CredentialManager, config: HttpClientConfig = {}) {
     this.credentialManager = credentialManager;
-    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.config = {
+      ...DEFAULT_CONFIG,
+      ...config,
+      rateLimit: { ...DEFAULT_CONFIG.rateLimit, ...config.rateLimit },
+      retry: { ...DEFAULT_CONFIG.retry, ...config.retry },
+    };
+
+    // Initialize rate limiters with guaranteed non-undefined values
+    const maxRequests = this.config.rateLimit.maxRequests!;
+    const perMilliseconds = this.config.rateLimit.perMilliseconds!;
+    const maxConcurrent = this.config.rateLimit.maxConcurrent!;
+
+    const refillRate = maxRequests / (perMilliseconds / 1000);
+    this.rateLimiter = new TokenBucket(maxRequests, refillRate);
+    this.concurrentLimiter = new ConcurrentLimiter(maxConcurrent);
 
     if (this.credentialManager.isAuthenticated()) {
       this.client = this.createClient();
@@ -97,7 +301,7 @@ export class HttpClient {
       // Output to stderr for maximum visibility (always shown, even if logs are filtered)
       const apiUrl = this.credentialManager.getApiUrl() ?? "unknown";
       console.error("\n\x1b[33m⚠️  WARNING: TLS certificate verification is DISABLED\x1b[0m");
-      console.error(`   URL: ${apiUrl}`);
+      console.error(`   URL: ${sanitizeUrlForLog(apiUrl)}`);
       console.error("   This should ONLY be used for staging/development environments!");
       console.error("   Consider using F5XC_CA_BUNDLE for a more secure solution.\n");
 
@@ -243,7 +447,7 @@ export class HttpClient {
           logger.error("API Error", {
             status,
             message,
-            url: error.config?.url,
+            url: sanitizeUrlForLog(error.config?.url),
           });
 
           // Transform to F5XC API error
@@ -307,7 +511,7 @@ export class HttpClient {
   }
 
   /**
-   * Make a generic request
+   * Make a generic request with rate limiting and retry logic
    */
   private async request<T>(
     method: string,
@@ -322,23 +526,102 @@ export class HttpClient {
       );
     }
 
+    // Apply rate limiting
+    await this.rateLimiter.consume(1);
+
+    // Apply concurrent request limiting
+    await this.concurrentLimiter.acquire();
+
+    try {
+      return await this.executeWithRetry<T>(method, path, data, config);
+    } finally {
+      this.concurrentLimiter.release();
+    }
+  }
+
+  /**
+   * Execute request with retry logic
+   */
+  private async executeWithRetry<T>(
+    method: string,
+    path: string,
+    data?: unknown,
+    config?: AxiosRequestConfig,
+    attempt: number = 0
+  ): Promise<ApiResponse<T>> {
     const startTime = Date.now();
 
-    const response = await this.client.request<T>({
-      method,
-      url: path,
-      data,
-      ...config,
-    });
+    try {
+      const response = await this.client!.request<T>({
+        method,
+        url: path,
+        data,
+        ...config,
+      });
 
-    const duration = Date.now() - startTime;
+      const duration = Date.now() - startTime;
 
-    return {
-      data: response.data,
-      status: response.status,
-      headers: response.headers as Record<string, string>,
-      duration,
-    };
+      return {
+        data: response.data,
+        status: response.status,
+        headers: response.headers as Record<string, string>,
+        duration,
+      };
+    } catch (error) {
+      const shouldRetry = this.shouldRetryRequest(error, attempt);
+
+      if (shouldRetry) {
+        const delay = this.calculateRetryDelay(attempt);
+        logger.debug(`Retrying request after ${delay}ms (attempt ${attempt + 1}/${this.config.retry.retries})`);
+
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return this.executeWithRetry<T>(method, path, data, config, attempt + 1);
+      }
+
+      throw error;
+    }
+  }
+
+  /**
+   * Determine if request should be retried
+   */
+  private shouldRetryRequest(error: unknown, attempt: number): boolean {
+    const retries = this.config.retry.retries!;
+    const retryOn = this.config.retry.retryOn!;
+
+    if (attempt >= retries) {
+      return false;
+    }
+
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      if (status && retryOn.includes(status)) {
+        return true;
+      }
+
+      // Retry on network errors
+      if (!error.response && error.code !== "ECONNABORTED") {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Calculate retry delay based on strategy
+   */
+  private calculateRetryDelay(attempt: number): number {
+    const baseDelay = 1000; // 1 second
+    const retryDelay = this.config.retry.retryDelay!;
+
+    if (retryDelay === "exponential") {
+      // Exponential backoff: 1s, 2s, 4s, 8s, etc.
+      return baseDelay * Math.pow(2, attempt);
+    } else {
+      // Linear backoff: 1s, 2s, 3s, 4s, etc.
+      return baseDelay * (attempt + 1);
+    }
   }
 
   /**

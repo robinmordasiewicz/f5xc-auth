@@ -6,6 +6,8 @@
  * Provides typed error classes for different error scenarios.
  */
 
+import { sanitizeUrlForLog } from "./path-security.js";
+
 /**
  * Base error class for F5XC errors
  */
@@ -171,7 +173,7 @@ Example:
       guidance += `
 
 SOLUTIONS:
-1. Verify the API URL is correct: ${apiUrl ?? "not set"}
+1. Verify the API URL is correct: ${sanitizeUrlForLog(apiUrl)}
 2. If using a custom CA, set F5XC_CA_BUNDLE=/path/to/ca-bundle.crt
 3. Check if the certificate has expired or is self-signed`;
     }

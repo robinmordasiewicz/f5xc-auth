@@ -28,6 +28,22 @@ export interface Profile {
   tlsInsecure?: boolean;
   /** Path to custom CA bundle for TLS verification */
   caBundle?: string;
+  /** Credential rotation metadata */
+  metadata?: ProfileMetadata;
+}
+
+/**
+ * Metadata for credential rotation tracking
+ */
+export interface ProfileMetadata {
+  /** Timestamp when profile was created (ISO 8601) */
+  createdAt?: string;
+  /** Timestamp when credentials were last rotated (ISO 8601) */
+  lastRotated?: string;
+  /** Timestamp when credentials expire (ISO 8601) */
+  expiresAt?: string;
+  /** Number of days after which credentials should be rotated */
+  rotateAfterDays?: number;
 }
 
 /**

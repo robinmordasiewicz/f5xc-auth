@@ -15,9 +15,15 @@
  * @packageDocumentation
  */
 
-import { readFileSync } from "fs";
+import { readFile } from "fs/promises";
 import { logger } from "../utils/logging.js";
 import { getProfileManager, type Profile } from "../profile/index.js";
+import {
+  validateFilePath,
+  validateFilePaths,
+  sanitizePathForLog,
+  PathValidationError,
+} from "../utils/path-security.js";
 
 /**
  * Authentication modes supported by the server
@@ -217,6 +223,9 @@ export class CredentialManager {
     if (this.initialized) return;
     this.credentials = await this.loadCredentials();
     this.initialized = true;
+
+    // Check credential expiration after loading
+    await this.checkCredentialExpiration();
   }
 
   /**
@@ -277,9 +286,9 @@ export class CredentialManager {
   /**
    * Build credentials object from profile data
    */
-  private buildCredentials(
+  private async buildCredentials(
     profile: Profile & { tlsInsecure?: boolean; caBundle?: string }
-  ): Credentials {
+  ): Promise<Credentials> {
     const apiUrl = profile.apiUrl;
 
     // Determine authentication mode
@@ -296,11 +305,18 @@ export class CredentialManager {
     // Load CA bundle if specified
     if (profile.caBundle) {
       try {
-        caBundle = readFileSync(profile.caBundle);
-        logger.info("Loaded CA bundle", { file: profile.caBundle });
+        const validatedPath = validateFilePath(profile.caBundle);
+        caBundle = await readFile(validatedPath);
+        logger.info("Loaded CA bundle", {
+          file: sanitizePathForLog(validatedPath, true),
+        });
       } catch (error) {
+        if (error instanceof PathValidationError) {
+          logger.error("Invalid CA bundle path", { error: error.message });
+          throw error;
+        }
         logger.warn("Failed to load CA bundle", {
-          file: profile.caBundle,
+          file: sanitizePathForLog(profile.caBundle, true),
           error: error instanceof Error ? error.message : String(error),
         });
       }
@@ -320,40 +336,79 @@ export class CredentialManager {
         // P12 certificate authentication
         mode = AuthMode.CERTIFICATE;
         try {
-          p12Certificate = readFileSync(profile.p12Bundle);
-          logger.info("Loaded P12 certificate", { file: profile.p12Bundle });
-        } catch (error) {
-          logger.error("Failed to load P12 certificate", {
-            file: profile.p12Bundle,
-            error: error instanceof Error ? error.message : String(error),
+          const validatedPath = validateFilePath(profile.p12Bundle);
+          p12Certificate = await readFile(validatedPath);
+          logger.info("Loaded P12 certificate", {
+            file: sanitizePathForLog(validatedPath, true),
           });
-          // Fall back to token auth if certificate load fails
-          if (profile.apiToken) {
-            mode = AuthMode.TOKEN;
-            logger.info("Falling back to token authentication");
+        } catch (error) {
+          if (error instanceof PathValidationError) {
+            logger.error("Invalid P12 certificate path", {
+              error: error.message,
+            });
+            // Fall back to token auth if path validation fails
+            if (profile.apiToken) {
+              mode = AuthMode.TOKEN;
+              logger.info("Falling back to token authentication");
+            } else {
+              mode = AuthMode.NONE;
+            }
           } else {
-            mode = AuthMode.NONE;
+            logger.error("Failed to load P12 certificate", {
+              file: sanitizePathForLog(profile.p12Bundle, true),
+              error: error instanceof Error ? error.message : String(error),
+            });
+            // Fall back to token auth if certificate load fails
+            if (profile.apiToken) {
+              mode = AuthMode.TOKEN;
+              logger.info("Falling back to token authentication");
+            } else {
+              mode = AuthMode.NONE;
+            }
           }
         }
       } else if (profile.cert && profile.key) {
         // Certificate + key authentication
         mode = AuthMode.CERTIFICATE;
         try {
-          cert = readFileSync(profile.cert, "utf-8");
-          key = readFileSync(profile.key, "utf-8");
+          // Validate both paths before reading
+          const [validatedCert, validatedKey] = validateFilePaths([
+            profile.cert,
+            profile.key,
+          ]);
+
+          // Read both files in parallel for better performance
+          [cert, key] = await Promise.all([
+            readFile(validatedCert, "utf-8"),
+            readFile(validatedKey, "utf-8"),
+          ]);
+
           logger.info("Loaded certificate and key", {
-            cert: profile.cert,
-            key: profile.key,
+            cert: sanitizePathForLog(validatedCert),
+            key: sanitizePathForLog(validatedKey),
           });
         } catch (error) {
-          logger.error("Failed to load certificate/key", {
-            error: error instanceof Error ? error.message : String(error),
-          });
-          if (profile.apiToken) {
-            mode = AuthMode.TOKEN;
-            logger.info("Falling back to token authentication");
+          if (error instanceof PathValidationError) {
+            logger.error("Invalid certificate path", { error: error.message });
+            // Fall back to token auth if path validation fails
+            if (profile.apiToken) {
+              mode = AuthMode.TOKEN;
+              logger.info("Falling back to token authentication");
+            } else {
+              mode = AuthMode.NONE;
+            }
           } else {
-            mode = AuthMode.NONE;
+            logger.error("Failed to load certificate/key", {
+              cert: sanitizePathForLog(profile.cert),
+              key: sanitizePathForLog(profile.key),
+              error: error instanceof Error ? error.message : String(error),
+            });
+            if (profile.apiToken) {
+              mode = AuthMode.TOKEN;
+              logger.info("Falling back to token authentication");
+            } else {
+              mode = AuthMode.NONE;
+            }
           }
         }
       } else if (profile.apiToken) {
@@ -375,6 +430,80 @@ export class CredentialManager {
   }
 
   /**
+   * Check credential expiration and log warnings
+   */
+  private async checkCredentialExpiration(): Promise<void> {
+    // Skip if credentials are from environment variables
+    if (!this.activeProfileName || this.activeProfileName === "__env__") {
+      return;
+    }
+
+    try {
+      const profileManager = getProfileManager();
+      const profile = await profileManager.get(this.activeProfileName);
+
+      if (!profile?.metadata) {
+        return;
+      }
+
+      const { expiresAt, lastRotated, rotateAfterDays } = profile.metadata;
+      const now = new Date();
+
+      // Check explicit expiration
+      if (expiresAt) {
+        const expirationDate = new Date(expiresAt);
+        if (expirationDate < now) {
+          logger.warn("Credentials have expired", {
+            profile: profile.name,
+            expiresAt,
+          });
+        } else {
+          // Calculate days until expiration
+          const daysUntilExpiration = Math.ceil(
+            (expirationDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          );
+
+          if (daysUntilExpiration <= 7) {
+            logger.info("Credentials expiring soon", {
+              profile: profile.name,
+              daysRemaining: daysUntilExpiration,
+              expiresAt,
+            });
+          }
+        }
+      }
+
+      // Check rotation schedule
+      if (lastRotated && rotateAfterDays) {
+        const rotationDate = new Date(lastRotated);
+        rotationDate.setDate(rotationDate.getDate() + rotateAfterDays);
+
+        const daysUntilRotation = Math.ceil(
+          (rotationDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+        );
+
+        if (daysUntilRotation <= 0) {
+          logger.warn("Credentials should be rotated", {
+            profile: profile.name,
+            lastRotated,
+            rotateAfterDays,
+          });
+        } else if (daysUntilRotation <= 7) {
+          logger.info("Credentials rotation approaching", {
+            profile: profile.name,
+            daysUntilRotation,
+            lastRotated,
+          });
+        }
+      }
+    } catch (error) {
+      logger.debug("Failed to check credential expiration", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  /**
    * Load credentials with priority order:
    * 1. Environment variables (highest)
    * 2. Active profile from ~/.config/f5xc/
@@ -384,7 +513,7 @@ export class CredentialManager {
     // Step 1: Check environment variables first (highest priority)
     const envCreds = this.loadFromEnvironment();
     if (envCreds.apiUrl && envCreds.hasAuth) {
-      const credentials = this.buildCredentials(envCreds as Profile);
+      const credentials = await this.buildCredentials(envCreds as Profile);
       const tenant = credentials.apiUrl ? extractTenantFromUrl(credentials.apiUrl) : null;
       logger.info("Credentials loaded from environment variables", {
         mode: credentials.mode,
@@ -396,7 +525,7 @@ export class CredentialManager {
     // Step 2: Try active profile from ~/.config/f5xc/
     const profile = await this.loadFromProfile();
     if (profile) {
-      const credentials = this.buildCredentials(profile);
+      const credentials = await this.buildCredentials(profile);
 
       if (credentials.mode !== AuthMode.NONE) {
         const tenant = credentials.apiUrl ? extractTenantFromUrl(credentials.apiUrl) : null;
