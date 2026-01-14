@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.2.0...v1.3.0) (2026-01-14)
+
+### ✨ Features
+
+* Add path validation security and async credential loading ([5e20e92](https://github.com/robinmordasiewicz/f5xc-auth/commit/5e20e926403bac56034f423bd0133e2d43ee1698)), closes [#42](https://github.com/robinmordasiewicz/f5xc-auth/issues/42)
+
 ## [1.2.0](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.1.0...v1.2.0) (2026-01-14)
 
 ### ✨ Features
