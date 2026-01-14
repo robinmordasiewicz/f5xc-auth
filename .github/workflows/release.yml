@@ -60,20 +60,24 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Released version: $VERSION"
 
+      # Repository dispatch requires a PAT with repo scope to trigger workflows in other repos
+      # Set DISPATCH_TOKEN secret with a PAT, or these steps will fail silently
       - name: Trigger terraform-provider-f5xc build
         if: steps.get_version.outputs.version != ''
+        continue-on-error: true
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
           repository: robinmordasiewicz/terraform-provider-f5xc
           event-type: f5xc-auth-release
           client-payload: '{"version": "${{ steps.get_version.outputs.version }}", "repository": "${{ github.repository }}"}'
 
       - name: Trigger f5xc-api-mcp build
         if: steps.get_version.outputs.version != ''
+        continue-on-error: true
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DISPATCH_TOKEN || secrets.GITHUB_TOKEN }}
           repository: robinmordasiewicz/f5xc-api-mcp
           event-type: f5xc-auth-release
           client-payload: '{"version": "${{ steps.get_version.outputs.version }}", "repository": "${{ github.repository }}"}'
