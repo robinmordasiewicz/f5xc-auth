@@ -1,3 +1,9 @@
+## [1.2.0](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.1.0...v1.2.0) (2026-01-14)
+
+### ✨ Features
+
+* merge three repositories into unified monorepo ([2f4465c](https://github.com/robinmordasiewicz/f5xc-auth/commit/2f4465ca82ac22724d11f35438773a42f92b8d3c)), closes [#1](https://github.com/robinmordasiewicz/f5xc-auth/issues/1)
+
 ## [1.1.0](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.0.1...v1.1.0) (2026-01-12)
 
 ### ✨ Features
