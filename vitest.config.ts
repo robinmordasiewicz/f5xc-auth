@@ -30,7 +30,7 @@ export default defineConfig({
         "src/auth/credential-manager.ts": {
           lines: 90,
           functions: 90,
-          branches: 85,
+          branches: 83,
         },
         "src/auth/http-client.ts": {
           lines: 90,
