@@ -1,3 +1,15 @@
+## [1.4.0](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.3.0...v1.4.0) (2026-01-16)
+
+### ✨ Features
+
+* add comprehensive testing infrastructure with Vitest ([d9cd946](https://github.com/robinmordasiewicz/f5xc-auth/commit/d9cd946c77b777b787aafc36926541ecc0ccb6ff)), closes [#44](https://github.com/robinmordasiewicz/f5xc-auth/issues/44)
+
+### 🐛 Bug Fixes
+
+* remove Codecov upload steps (no token configured) ([337a02a](https://github.com/robinmordasiewicz/f5xc-auth/commit/337a02a7e31e666fa6f01376bd4bf27d93b1bcd4))
+* remove UAT and validate steps from CI workflow ([f1e3889](https://github.com/robinmordasiewicz/f5xc-auth/commit/f1e3889bf231f3adceebaf7fdad48c55aeac3ba4)), closes [#46](https://github.com/robinmordasiewicz/f5xc-auth/issues/46)
+* run coverage only on Node 20.x (inspector/promises requires >=19) ([4cfaf87](https://github.com/robinmordasiewicz/f5xc-auth/commit/4cfaf87e6ecbbbb01779884aa023dde00c79d8c2))
+
 ## [1.3.0](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.2.0...v1.3.0) (2026-01-14)
 
 ### ✨ Features
