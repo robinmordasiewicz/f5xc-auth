@@ -1,3 +1,9 @@
+## [1.4.1](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.4.0...v1.4.1) (2026-01-16)
+
+### 📚 Documentation
+
+* update README and add CONTRIBUTING guide ([9ebefa8](https://github.com/robinmordasiewicz/f5xc-auth/commit/9ebefa8427b5737ef99306ea00641a5c0a831236)), closes [#47](https://github.com/robinmordasiewicz/f5xc-auth/issues/47)
+
 ## [1.4.0](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.3.0...v1.4.0) (2026-01-16)
 
 ### ✨ Features
