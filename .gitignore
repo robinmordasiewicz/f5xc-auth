@@ -1,55 +1,7 @@
-# Dependencies
-node_modules/
-
-# Build output
-dist/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
 .DS_Store
-Thumbs.db
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# Logs
-*.log
-npm-debug.log*
-
-# Test coverage
-coverage/
-
-# MkDocs build output
-site/
-
-# Monorepo
-packages/*/dist/
-packages/*/node_modules/
-packages/*/.vscode/
-packages/*/.idea/
-
-# Go (Terraform Provider)
-*.so
-*.dylib
-*.dll
-*.exe
-bin/
+node_modules/
 dist/
-terraform-plugin-debug.log
-crash.log
-
-# Terraform
-.terraform/
-*.tfstate*
-*.tfvars
-override.tf.json
-
-# Generated files
-generate-*
+.env
+.env.*
+*.log
+.astro/
