@@ -1,8 +1,9 @@
-# Multi-Tenant Management
+---
+title: Multi-Tenant Management
+description: Manage resources across multiple F5 Distributed Cloud tenants
+---
 
 Manage resources across multiple F5 Distributed Cloud tenants.
-
----
 
 ## Code
 
@@ -27,7 +28,7 @@ async function getAllTenantInfo(): Promise<TenantInfo[]> {
     await credentialManager.initialize();
 
     if (!credentialManager.isAuthenticated()) {
-      console.warn(`⚠️  Skipping ${profileName} - not authenticated`);
+      console.warn(`Skipping ${profileName} - not authenticated`);
       continue;
     }
 
@@ -42,7 +43,7 @@ async function getAllTenantInfo(): Promise<TenantInfo[]> {
           namespaceCount: response.data.items.length
         });
       } catch (error) {
-        console.error(`❌ Failed to query ${profileName}`);
+        console.error(`Failed to query ${profileName}`);
       }
     }
   }
@@ -58,8 +59,6 @@ getAllTenantInfo().then(info => {
   });
 }).catch(console.error);
 ```
-
----
 
 ## See Also
 

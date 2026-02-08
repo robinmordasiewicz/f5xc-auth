@@ -1,8 +1,9 @@
-# Profile Switcher
+---
+title: Profile Switcher
+description: Switch between different profiles to manage multiple tenants
+---
 
 Switch between different profiles to manage multiple tenants.
-
----
 
 ## Code
 
@@ -24,16 +25,14 @@ async function switchAndTest(profileName: string) {
   const httpClient = createHttpClient(credentialManager);
   if (httpClient.isAvailable()) {
     const response = await httpClient.get('/web/namespaces');
-    console.log(`✓ Connected to: ${credentialManager.getTenant()}`);
-    console.log(`✓ Namespaces: ${response.data.items.length}`);
+    console.log(`Connected to: ${credentialManager.getTenant()}`);
+    console.log(`Namespaces: ${response.data.items.length}`);
   }
 }
 
 // Usage
 switchAndTest('production').catch(console.error);
 ```
-
----
 
 ## See Also
 

@@ -1,8 +1,9 @@
-# Troubleshooting
+---
+title: Troubleshooting
+description: Common issues and solutions for the f5xc-auth library
+---
 
 Common issues and solutions for the f5xc-auth library.
-
----
 
 ## Authentication Issues
 
@@ -37,8 +38,6 @@ export F5XC_API_URL="https://mytenant.console.ves.volterra.io"
 export F5XC_API_TOKEN="your-token"
 ```
 
----
-
 ## Profile Not Found
 
 **Problem:** Profile doesn't exist or can't be loaded
@@ -67,8 +66,6 @@ await profileManager.save({
 });
 ```
 
----
-
 ## HTTP Client Not Available
 
 **Problem:** `httpClient.isAvailable()` returns false
@@ -93,8 +90,6 @@ console.log('Tenant:', credentialManager.getTenant());
 curl -I https://mytenant.console.ves.volterra.io
 ```
 
----
-
 ## TLS Certificate Errors
 
 **Problem:** `UNABLE_TO_VERIFY_LEAF_SIGNATURE` or similar TLS errors
@@ -115,8 +110,6 @@ export F5XC_CA_BUNDLE="/path/to/ca-bundle.pem"
 ```bash
 npm install -g node
 ```
-
----
 
 ## Permission Errors
 
@@ -139,8 +132,6 @@ chmod 600 ~/.config/f5xc/profiles/*.json
 ```bash
 chown -R $USER:$USER ~/.config/f5xc
 ```
-
----
 
 ## API Request Failures
 
@@ -167,8 +158,6 @@ const namespace = credentialManager.getNamespace();
 console.log('Using namespace:', namespace);
 ```
 
----
-
 ## Debug Mode
 
 Enable debug logging to troubleshoot issues:
@@ -186,8 +175,6 @@ const httpClient = createHttpClient(credentialManager, { debug: true });
 - Profile loading steps
 - HTTP request/response details
 - Authentication header information (tokens masked)
-
----
 
 ## See Also
 

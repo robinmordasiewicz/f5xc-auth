@@ -1,67 +1,85 @@
-# Contributing to f5xc-auth
+# Contributing
 
-## Automated Release Process
+Thank you for your interest in contributing. This document describes the workflow and rules that all contributors — human and AI — must follow.
 
-This project uses **semantic-release** for automated versioning and publishing. Commits to the `main` branch automatically trigger version bumps and npm releases based on commit message format.
+## Workflow Overview
 
-## Commit Message Format
+Every change follows this path:
 
-Use **Conventional Commits** format for all commits:
-
-| Type | Description | Version Bump |
-|------|-------------|--------------|
-| `feat:` | New feature | Minor (0.x.0) |
-| `fix:` | Bug fix | Patch (0.0.x) |
-| `docs:` | Documentation only | None |
-| `test:` | Tests only | None |
-| `chore:` | Build/tooling changes | None |
-
-**Examples:**
-```bash
-feat: add P12 certificate authentication
-fix: resolve profile loading race condition
-docs: update authentication guide
-test: add integration tests for profile rotation
-chore: update dependencies
+```text
+Issue → Branch → PR (linked to issue) → CI passes → Merge → Branch auto-deleted
 ```
 
-## Breaking Changes
+No exceptions. PRs without a linked issue will be blocked by CI.
 
-To trigger a **major version** bump (x.0.0), add `BREAKING CHANGE:` in the commit footer:
+## Step 1: Create an Issue
+
+Every change starts with a GitHub issue. Use one of the provided templates:
+
+- **Bug Report** — for bugs and unexpected behavior
+- **Feature Request** — for new features and improvements
+- **Documentation** — for docs improvements or missing content
+
+Blank issues are disabled. Pick the template that best fits your change.
+
+## Step 2: Create a Feature Branch
+
+Branch from `main` using one of these naming conventions:
+
+| Prefix | Use for | Example |
+|--------|---------|---------|
+| `feature/` | New features | `feature/42-add-rate-limiting` |
+| `fix/` | Bug fixes | `fix/17-correct-threshold-calc` |
+| `docs/` | Documentation | `docs/8-update-setup-guide` |
+
+Format: `<prefix>/<issue-number>-short-description`
 
 ```bash
-feat: redesign profile API
-
-BREAKING CHANGE: ProfileManager.load() now returns Promise<Profile> instead of Profile
+git checkout main
+git pull origin main
+git checkout -b feature/42-add-rate-limiting
 ```
 
-## Development Workflow
+## Step 3: Make Changes and Commit
 
-1. **Clone and install**:
-   ```bash
-   git clone https://github.com/robinmordasiewicz/f5xc-auth.git
-   cd f5xc-auth
-   npm install
-   ```
+- Write small, focused commits
+- Use conventional commit messages:
+  - `feat: add rate limiting configuration`
+  - `fix: correct threshold calculation`
+  - `docs: update setup guide`
 
-2. **Make changes**: Follow existing code patterns and TypeScript best practices
+## Step 4: Open a Pull Request
 
-3. **Run tests**: Ensure all tests pass before committing
-   ```bash
-   npm test              # Run all tests
-   npm run test:unit     # Unit tests only
-   npm run test:integration  # Integration tests
-   npm run test:coverage # Generate coverage report
-   ```
+1. Push your branch and open a PR against `main`
+2. **Link the issue** — use `Closes #42` in the PR description, or link from the sidebar
+3. Fill out the PR template (it loads automatically)
+4. The **"Check linked issues"** CI check will block merge if no issue is linked
 
-4. **Commit with conventional format**: Your commit message determines the release version
+## Step 5: Review and Merge
 
-## Full Documentation
+- All CI checks must pass before merge
+- Auto-merge is enabled — PRs merge automatically once all checks pass
+- Squash merge is preferred
+- The branch is automatically deleted after merge (`delete_branch_on_merge` is enabled)
 
-For comprehensive guidelines including:
-- Detailed testing strategies
-- Code style standards
-- Security considerations
-- Architecture patterns
+## Branch Protection Rules
 
-See **[docs/contributing.md](./docs/contributing.md)** (298 lines)
+The `main` branch is protected. The following rules are enforced:
+
+- No direct pushes to `main` — all changes go through PRs
+- No force pushes
+- Required status check: **"Check linked issues"** must pass
+- Admin enforcement enabled — these rules apply to everyone
+
+## AI Assistant Guidelines
+
+If you are Claude Code, Copilot, or another AI coding assistant, follow these rules:
+
+1. **Always create a GitHub issue before writing code.** No issue = no work.
+2. **Always work on a feature branch.** Never commit directly to `main`.
+3. **Always link the PR to the issue.** Use `Closes #N` in the PR description.
+4. **Use the `/ship` skill** when available — it handles the full Issue → Branch → PR flow.
+5. **Never force push** or attempt to bypass branch protection.
+6. **Fill out the PR template checklist** completely.
+7. **Follow the branch naming convention**: `feature/<issue>-desc`, `fix/<issue>-desc`, `docs/<issue>-desc`.
+8. **Respect CODEOWNERS** — `@robinmordasiewicz` is the default reviewer.

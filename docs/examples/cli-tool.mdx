@@ -1,8 +1,9 @@
-# Simple CLI Tool
+---
+title: Simple CLI Tool
+description: A basic command-line tool for making F5 XC API calls
+---
 
 A basic command-line tool for making F5 XC API calls.
-
----
 
 ## Code
 
@@ -16,17 +17,17 @@ async function main() {
   await credentialManager.initialize();
 
   if (!credentialManager.isAuthenticated()) {
-    console.error('❌ Not authenticated. Set F5XC_API_URL and F5XC_API_TOKEN');
+    console.error('Not authenticated. Set F5XC_API_URL and F5XC_API_TOKEN');
     process.exit(1);
   }
 
-  console.log(`✓ Authenticated as: ${credentialManager.getTenant()}`);
+  console.log(`Authenticated as: ${credentialManager.getTenant()}`);
 
   // Create HTTP client
   const httpClient = createHttpClient(credentialManager);
 
   if (!httpClient.isAvailable()) {
-    console.error('❌ HTTP client not available');
+    console.error('HTTP client not available');
     process.exit(1);
   }
 
@@ -40,8 +41,6 @@ async function main() {
 
 main().catch(console.error);
 ```
-
----
 
 ## See Also
 

@@ -1,8 +1,9 @@
-# HTTP Client
+---
+title: HTTP Client
+description: Use the pre-configured HTTP client for F5 Distributed Cloud API calls
+---
 
 Use the pre-configured HTTP client for F5 Distributed Cloud API calls.
-
----
 
 ## Basic Usage
 
@@ -21,8 +22,6 @@ if (httpClient.isAvailable()) {
 }
 ```
 
----
-
 ## Advanced Configuration
 
 ```typescript
@@ -34,8 +33,6 @@ const httpClient = createHttpClient(credentialManager, {
   validateStatus: (status) => status < 500  // Custom status validation
 });
 ```
-
----
 
 ## CRUD Operations
 
@@ -73,8 +70,6 @@ await httpClient.delete('/api/config/namespaces/my-ns/http_loadbalancers/my-lb')
 console.log('Load balancer deleted');
 ```
 
----
-
 ## Error Handling
 
 ```typescript
@@ -107,8 +102,6 @@ async function safeApiCall() {
 }
 ```
 
----
-
 ## Custom Headers
 
 ```typescript
@@ -123,8 +116,6 @@ const response = await httpClient.get('/web/namespaces', {
 // Add custom headers to all requests
 httpClient.defaults.headers.common['X-Global-Header'] = 'global-value';
 ```
-
----
 
 ## See Also
 
