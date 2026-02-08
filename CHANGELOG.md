@@ -1,3 +1,9 @@
+## [1.5.0](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.4.1...v1.5.0) (2026-02-08)
+
+### ✨ Features
+
+* onboard governance and starlight docs ([#54](https://github.com/robinmordasiewicz/f5xc-auth/issues/54)) ([dc0d81c](https://github.com/robinmordasiewicz/f5xc-auth/commit/dc0d81cffa46c478a2c7c0adba29461669561468)), closes [#53](https://github.com/robinmordasiewicz/f5xc-auth/issues/53)
+
 ## [1.4.1](https://github.com/robinmordasiewicz/f5xc-auth/compare/v1.4.0...v1.4.1) (2026-01-16)
 
 ### 📚 Documentation
