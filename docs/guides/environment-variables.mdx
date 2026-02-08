@@ -1,8 +1,9 @@
-# Environment Variables
+---
+title: Environment Variables
+description: Configure authentication using environment variables for CI/CD workflows
+---
 
 Configure authentication using environment variables for CI/CD workflows.
-
----
 
 ## Environment Variables Reference
 
@@ -20,8 +21,6 @@ Environment variables take highest priority and override profile settings.
 | `F5XC_TLS_INSECURE` | Disable TLS verification (**staging only**) | `true` |
 | `F5XC_CA_BUNDLE` | Path to custom CA bundle | `/path/to/ca-bundle.pem` |
 
----
-
 ## Priority Order
 
 Credentials are resolved in the following order (highest to lowest priority):
@@ -29,8 +28,6 @@ Credentials are resolved in the following order (highest to lowest priority):
 1. **Environment variables** - Override everything
 2. **Active profile** - From `~/.config/f5xc/profiles/`
 3. **Documentation mode** - No credentials (read-only operations)
-
----
 
 ## CI/CD Example
 
@@ -44,8 +41,6 @@ export F5XC_NAMESPACE="production"
 
 node deploy.js
 ```
-
----
 
 ## Docker Example
 
@@ -75,8 +70,6 @@ services:
       - F5XC_API_TOKEN=${F5XC_API_TOKEN}
       - F5XC_NAMESPACE=production
 ```
-
----
 
 ## See Also
 

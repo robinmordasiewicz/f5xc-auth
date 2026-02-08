@@ -1,0 +1,7 @@
+{
+  "repository": {
+    "description": "Shared authentication library for F5 Distributed Cloud MCP servers",
+    "homepage": "https://robinmordasiewicz.github.io/f5xc-auth/"
+  },
+  "topics": ["f5xc", "auth", "typescript"]
+}

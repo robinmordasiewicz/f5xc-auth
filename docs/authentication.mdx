@@ -1,8 +1,9 @@
-# Authentication
+---
+title: Authentication
+description: Configure authentication credentials for F5 Distributed Cloud
+---
 
 Configure authentication credentials for F5 Distributed Cloud using one of three supported methods.
-
----
 
 ## Authentication Methods
 
@@ -114,8 +115,6 @@ await profileManager.save({
 }
 ```
 
----
-
 ## URL Normalization
 
 The library automatically normalizes various F5 XC URL formats:
@@ -124,16 +123,16 @@ The library automatically normalizes various F5 XC URL formats:
 // All of these are normalized to the correct API URL:
 
 'mytenant.console.ves.volterra.io'
-→ 'https://mytenant.console.ves.volterra.io'
+// → 'https://mytenant.console.ves.volterra.io'
 
 'https://mytenant.console.ves.volterra.io'
-→ 'https://mytenant.console.ves.volterra.io'
+// → 'https://mytenant.console.ves.volterra.io'
 
 'mytenant.console.ves.volterra.io/web'
-→ 'https://mytenant.console.ves.volterra.io'
+// → 'https://mytenant.console.ves.volterra.io'
 
 'https://mytenant.console.ves.volterra.io/web/workspaces'
-→ 'https://mytenant.console.ves.volterra.io'
+// → 'https://mytenant.console.ves.volterra.io'
 ```
 
 **Example:**
@@ -146,8 +145,6 @@ await credentialManager.initialize();
 console.log(credentialManager.getApiUrl());
 // Always outputs: https://mytenant.console.ves.volterra.io
 ```
-
----
 
 ## Security
 
@@ -181,7 +178,7 @@ console.log('Token:', credentialManager.getApiToken());
 TLS verification is **enabled by default**. Only disable for staging/development:
 
 ```bash
-# ⚠️ Only use in non-production environments
+# Only use in non-production environments
 export F5XC_TLS_INSECURE=true
 ```
 
@@ -191,7 +188,7 @@ await profileManager.save({
   name: 'staging',
   apiUrl: 'https://staging.internal',
   apiToken: 'token',
-  tlsInsecure: true  // ⚠️ Disable TLS verification
+  tlsInsecure: true  // Disable TLS verification
 });
 ```
 
@@ -229,8 +226,6 @@ await profileManager.save({
 *.key
 .env
 ```
-
----
 
 ## See Also
 

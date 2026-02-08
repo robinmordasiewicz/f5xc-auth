@@ -1,8 +1,9 @@
-# HTTP Client
+---
+title: HTTP Client
+description: Create a pre-configured Axios HTTP client for F5 Distributed Cloud API calls
+---
 
 Create a pre-configured Axios HTTP client for F5 Distributed Cloud API calls.
-
----
 
 ## Function Signature
 
@@ -12,8 +13,6 @@ function createHttpClient(
   options?: HttpClientOptions
 ): HttpClient
 ```
-
----
 
 ## Options
 
@@ -27,8 +26,6 @@ interface HttpClientOptions {
 }
 ```
 
----
-
 ## Returns
 
 ```typescript
@@ -36,8 +33,6 @@ interface HttpClient extends AxiosInstance {
   isAvailable(): boolean;     // Check if client is ready
 }
 ```
-
----
 
 ## Example
 
@@ -52,8 +47,6 @@ if (httpClient.isAvailable()) {
   const response = await httpClient.get('/web/namespaces');
 }
 ```
-
----
 
 ## See Also
 

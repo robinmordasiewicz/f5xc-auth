@@ -1,8 +1,9 @@
-# ProfileManager
+---
+title: ProfileManager
+description: Manage profile storage and retrieval
+---
 
 Manage profile storage and retrieval.
-
----
 
 ## Getting Instance
 
@@ -11,8 +12,6 @@ import { getProfileManager } from '@robinmordasiewicz/f5xc-auth';
 
 const profileManager = getProfileManager();
 ```
-
----
 
 ## Methods
 
@@ -25,8 +24,6 @@ const profiles = await profileManager.list();
 // Returns: ['production', 'staging', 'development']
 ```
 
----
-
 ### `load(name: string): Promise<Profile | null>`
 
 Load a specific profile.
@@ -37,8 +34,6 @@ if (profile) {
   console.log('Loaded profile:', profile.name);
 }
 ```
-
----
 
 ### `save(profile: Profile): Promise<void>`
 
@@ -53,8 +48,6 @@ await profileManager.save({
 });
 ```
 
----
-
 ### `delete(name: string): Promise<void>`
 
 Delete a specific profile.
@@ -62,8 +55,6 @@ Delete a specific profile.
 ```typescript
 await profileManager.delete('old-profile');
 ```
-
----
 
 ### `getActiveProfile(): Promise<Profile | null>`
 
@@ -74,8 +65,6 @@ const active = await profileManager.getActiveProfile();
 console.log('Active:', active?.name);
 ```
 
----
-
 ### `setActive(name: string): Promise<void>`
 
 Set a profile as active.
@@ -83,8 +72,6 @@ Set a profile as active.
 ```typescript
 await profileManager.setActive('production');
 ```
-
----
 
 ### `deleteActive(): Promise<void>`
 
@@ -94,8 +81,6 @@ Delete the active profile marker.
 await profileManager.deleteActive();
 ```
 
----
-
 ### `isActive(name: string): Promise<boolean>`
 
 Check if a specific profile is active.
@@ -103,8 +88,6 @@ Check if a specific profile is active.
 ```typescript
 const isActive = await profileManager.isActive('production');
 ```
-
----
 
 ## See Also
 
