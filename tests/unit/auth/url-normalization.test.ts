@@ -11,7 +11,7 @@ import {
   normalizeApiUrl,
   normalizeTenantUrl,
   extractTenantFromUrl,
-} from "../credential-manager.js";
+} from "../../../src/auth/credential-manager.js";
 
 describe("normalizeApiUrl", () => {
   describe("protocol handling", () => {
