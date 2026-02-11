@@ -45,7 +45,6 @@
         }
       }
     ],
-    "@semantic-release/changelog",
     [
       "@semantic-release/npm",
       {
@@ -63,13 +62,6 @@
           }
         ],
         "successComment": "🎉 This ${issue.pull_request ? 'PR is included' : 'issue has been resolved'} in version ${nextRelease.version} :tada:\n\nThe release is available on:\n- [npm package (@latest)](https://www.npmjs.com/package/@robinmordasiewicz/f5xc-auth)\n- [GitHub release](${releases[0].url})\n\n---\n\n🤖 Automated release by [semantic-release](https://github.com/semantic-release/semantic-release)"
-      }
-    ],
-    [
-      "@semantic-release/git",
-      {
-        "assets": ["package.json", "package-lock.json", "CHANGELOG.md"],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
     ]
   ]
