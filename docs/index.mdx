@@ -1,28 +1,19 @@
 ---
 title: f5xc-auth
-description: Shared authentication library for F5 Distributed Cloud MCP servers
-template: splash
-sidebar:
-  hidden: true
+description: Shared authentication library for Cloud MCP servers
 hero:
-  tagline: XDG-compliant profile management and credential handling for TypeScript/Node.js
-  actions:
-    - text: Get Started
-      link: guides/quick-start/
-      icon: right-arrow
-      variant: primary
+  tagline: XDG-compliant profile management TypeScript library designed for Cloud applications. It provides a unified interface for credential management, profile storage, and HTTP client configuration.
 ---
 
 ## Overview
 
-`@robinmordasiewicz/f5xc-auth` is a TypeScript authentication library designed for F5 Distributed Cloud (XC) applications. It provides a unified interface for credential management, profile storage, and HTTP client configuration.
 
 **Key Benefits:**
 
 - **XDG-compliant storage** - Profiles stored securely in `~/.config/f5xc/profiles/`
 - **Multiple auth methods** - API tokens, P12 certificates, or certificate/key pairs
 - **Environment priority** - Override profiles with environment variables for CI/CD
-- **URL normalization** - Automatic handling of various F5 XC tenant URL formats
+- **URL normalization** - Automatic handling of various tenant URL formats
 - **Pre-configured HTTP** - Axios client with authentication and retry logic
 - **Type-safe** - Full TypeScript support with comprehensive type definitions
 
@@ -35,7 +26,7 @@ npm install @robinmordasiewicz/f5xc-auth
 **Requirements:**
 
 - Node.js 18 or later
-- Valid F5 Distributed Cloud tenant credentials
+- Valid Cloud tenant credentials
 
 ## Next Steps
 
