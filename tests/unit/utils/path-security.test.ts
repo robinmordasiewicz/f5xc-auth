@@ -6,7 +6,7 @@ import {
   validateFilePaths,
   sanitizePathForLog,
   PathValidationError,
-} from "../path-security.js";
+} from "../../../src/utils/path-security.js";
 
 describe("PathValidationError", () => {
   test("creates error with message and path", () => {

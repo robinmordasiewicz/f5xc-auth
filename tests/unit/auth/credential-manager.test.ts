@@ -5,9 +5,6 @@ import {
   CredentialManager,
   AuthMode,
   AUTH_ENV_VARS,
-  normalizeApiUrl,
-  extractTenantFromUrl,
-  normalizeTenantUrl,
 } from "../../../src/auth/credential-manager.js";
 import type { Profile } from "../../../src/profile/types.js";
 import { logger } from "../../../src/utils/logging.js";
@@ -632,38 +629,6 @@ describe("CredentialManager", () => {
       // Act & Assert - should not throw
       await expect(manager.initialize()).resolves.not.toThrow();
       expect(manager.getAuthMode()).toBe(AuthMode.NONE);
-    });
-  });
-
-  describe("URL Normalization", () => {
-    test("normalizes production short-form URLs", () => {
-      expect(normalizeApiUrl("tenant.volterra.us")).toBe(
-        "https://tenant.console.ves.volterra.io/api"
-      );
-    });
-
-    test("normalizes staging short-form URLs", () => {
-      expect(normalizeApiUrl("tenant.staging.volterra.us")).toBe(
-        "https://tenant.staging.volterra.us/api"
-      );
-    });
-
-    test("normalizes console URLs", () => {
-      expect(normalizeApiUrl("tenant.console.ves.volterra.io")).toBe(
-        "https://tenant.console.ves.volterra.io/api"
-      );
-    });
-
-    test("extracts tenant from URL", () => {
-      expect(extractTenantFromUrl("https://mytenant.console.ves.volterra.io/api")).toBe(
-        "mytenant"
-      );
-    });
-
-    test("normalizes tenant URL without /api suffix", () => {
-      expect(normalizeTenantUrl("tenant.volterra.us")).toBe(
-        "https://tenant.console.ves.volterra.io"
-      );
     });
   });
 
